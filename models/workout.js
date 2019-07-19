@@ -15,6 +15,9 @@ var WorkoutSchema = new Schema({
     },
     weight: {
         type: Number
+    },
+    sets: {
+        type: Number
     }
 });
 

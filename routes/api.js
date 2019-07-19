@@ -31,12 +31,10 @@ router.post('/register', function(req, res) {
 });
 
 router.post('/login', function(req, res) {
-  console.log(req.headers);
   User.findOne({
     email: req.body.email
   }, function(err, user) {
     if (err) throw err;
-
     if (!user) {
       res.status(401).send({success: false, msg: 'Authentication failed. User not found.'});
     } else {
@@ -45,7 +43,7 @@ router.post('/login', function(req, res) {
           const token = jwt.sign(user.toJSON(), config.secret, {
             expiresIn: 604800
           });
-          res.json({success: true, token: 'JWT ' + token});
+          res.send({success: true, token: 'JWT ' + token});
         } else {
           res.status(401).send({success: false, msg: 'Authentication failed. Wrong password.'});
         }
@@ -53,6 +51,10 @@ router.post('/login', function(req, res) {
     }
   });
 });
+
+router.get('/me', function(req, res) {
+  res.status(200).send({username: 'kenok', email: 'ken@ok.com', password: 'ok'});
+})
 
 router.post('/workout', passport.authenticate('jwt', { session: false}), function(req, res) {
   var token = getToken(req.headers);
@@ -62,7 +64,8 @@ router.post('/workout', passport.authenticate('jwt', { session: false}), functio
       name: req.body.name,
       reps: req.body.reps,
       weight: req.body.weight,
-      description: req.body.description
+      description: req.body.description,
+      sets: req.body.sets
     });
     newWorkout.save(function(err) {
       if (err) {
