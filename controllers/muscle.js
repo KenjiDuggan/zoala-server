@@ -2,6 +2,7 @@ const Muscle = require('../models/muscle');
 const User = require('../models/user');
 
 module.exports = {
+
     async postMuscle(req, res) {
         try {
             let username = req.body.username;
@@ -26,7 +27,7 @@ module.exports = {
                 res.json({success: true, msg: 'Successful created new Muscle under current user.'});
             }
 
-            const muscle = await Muscle.create({
+            await Muscle.create({
                 name: name,
                 description: description,
                 schedule: req.body.schedule
@@ -34,11 +35,22 @@ module.exports = {
                 if (error){
                     console.log(error);
                 } else {
+                User.findOneAndUpdate(
+                    {_id: req.user._id},
+                    {$push: {muscles: muscle}},
+                    function(error, success) {
+                        if (error) {
+                            console.log(error);
+                        } else {
+                            console.log(success);
+                        }
+                    }
+                )
 
-                    console.log(muscle);
-                    user.muscles.push(muscle._id);
-                    user.save();
-                    res.send(muscle);
+                console.log(muscle);
+                    // user.muscle.pushAll(req._id);
+                    // user.save(done);
+                    // res.send(req.body);
                 }
             })
         } catch (error) {
@@ -46,10 +58,10 @@ module.exports = {
         }
     },
 
-    async getMusclebyId(req, res) {
+    async findMuscle(req, res) {
         try {
             const user = await User.findOne({
-                username: req.params.id
+                username: req.body.username
             });
 
             const muscles = await Muscle.find({'_id': { $in: user.muscles } }, function (error, foundMuscle) {

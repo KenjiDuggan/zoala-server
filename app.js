@@ -22,11 +22,16 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
 app.set('view engine', 'jade');
 require("./routes/routes")(app);
 
 app.get('/', function(req, res) {
   res.send('Page under construction.');
+});
+
+app.get('/me', function(req, res) {
+  res.send({success: true, msg: 'Good'});
 });
 
 mongoose.connect(config.database, { useNewUrlParser: true });
