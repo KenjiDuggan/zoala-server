@@ -48,9 +48,7 @@ module.exports = {
                 )
 
                 console.log(muscle);
-                    // user.muscle.pushAll(req._id);
-                    // user.save(done);
-                    // res.send(req.body);
+
                 }
             })
         } catch (error) {
@@ -77,14 +75,16 @@ module.exports = {
     },
 
     async getMuscle(req, res) {
-        try {
-            const muscle = await Muscle.findOne({
-                _id: req.params.id,
+        try {  
+            console.log(req);
+            const user = await User.findOne({
+                _id: req.user._id
             });
-            res.send(muscle);
+
+            res.send(user.muscles);
         } catch (error) {
             console.log(error);
-            res.status(403).send({success: false, msg: 'Failed to get Gainz plan by id.'});
+            res.status(403).send({success: false, msg: 'Failed to get Gainz'});
         }
     },
 

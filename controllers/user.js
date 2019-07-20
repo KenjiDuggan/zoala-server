@@ -60,5 +60,10 @@ module.exports = {
             console.log(error);
             res.status(500).send({success: false, msg: 'Authentication failed. Wrong information or no account in your possesion.'});
         }
-    }
+    },
+
+     me(req, res){
+        res.send({success: true, msg: 'Good'});
+     }
+
 }

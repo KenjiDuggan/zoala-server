@@ -30,10 +30,6 @@ app.get('/', function(req, res) {
   res.send('Page under construction.');
 });
 
-app.get('/me', function(req, res) {
-  res.send({success: true, msg: 'Good'});
-});
-
 mongoose.connect(config.database, { useNewUrlParser: true });
 
 app.listen(8081, () => {
