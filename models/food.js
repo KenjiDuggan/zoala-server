@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var WorkoutSchema = new Schema({
+var FoodSchema = new Schema({
     name: {
         type: String,
         required: true
@@ -10,15 +10,12 @@ var WorkoutSchema = new Schema({
         type: String,
         required: true,
     },
-    reps: {
-        type: Number
+    type: {
+        type: String
     },
-    weight: {
-        type: Number
-    },
-    sets: {
-        type: Number
-    }
+    schedule: [
+
+    ],
 });
 
-module.exports = mongoose.model('Workout', WorkoutSchema);
+module.exports = mongoose.model('Food', FoodSchema);

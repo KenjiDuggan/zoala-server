@@ -15,7 +15,19 @@ var UserSchema = new Schema({
   password: {
         type: String,
         required: true
-    }
+    },
+  muscles: [
+//muscle model
+  ],
+  cardios: [
+//cardio model
+  ],
+  foods: [
+//food model
+  ],
+  sleeps: [
+//sleep model
+  ]
 });
 
 UserSchema.pre('save', function (next) {
