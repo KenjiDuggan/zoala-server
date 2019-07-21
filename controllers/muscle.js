@@ -30,7 +30,7 @@ module.exports = {
             await Muscle.create({
                 name: name,
                 description: description,
-                schedule: req.body.schedule
+                schedule: req.body.days
             }, (error, muscle) => {
                 if (error){
                     console.log(error);
@@ -46,7 +46,6 @@ module.exports = {
                         }
                     }
                 )
-
                 console.log(muscle);
 
                 }
