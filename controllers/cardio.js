@@ -1,9 +1,9 @@
-import MuscleModel from '../models/muscle';
-import UserModel from '../models/user';
+import CardioModel from '../models/cardio';
+import UserModel from'../models/user';
 
-const MuscleController = {
+const CardioController = {
 
-    async postMuscle(req, res) {
+    async postCardio(req, res) {
         try {
             let username = req.body.username;
             let name, description;
@@ -24,20 +24,20 @@ const MuscleController = {
             });
 
             if (!user) {
-                res.json({success: true, msg: 'Successful created new Muscle under current user.'});
+                res.json({success: true, msg: 'Successful created new Cardio under current user.'});
             }
 
-            await MuscleModel.create({
+            await CardioModel.create({
                 name: name,
                 description: description,
                 schedule: req.body.days
-            }, (error, muscle) => {
+            }, (error, Cardio) => {
                 if (error){
                     console.log(error);
                 } else {
                 UserModel.findOneAndUpdate(
                     {_id: req.user._id},
-                    {$push: {muscles: muscle}},
+                    {$push: {Cardios: Cardio}},
                     function(error, success) {
                         if (error) {
                             console.log(error);
@@ -46,7 +46,7 @@ const MuscleController = {
                         }
                     }
                 )
-                console.log(muscle);
+                console.log(Cardio);
 
                 }
             })
@@ -55,17 +55,17 @@ const MuscleController = {
         }
     },
 
-    async findMuscle(req, res) {
+    async findCardio(req, res) {
         try {
             const user = await UserModel.findOne({
                 username: req.body.username
             });
 
-            const muscles = await MuscleModel.find({'_id': { $in: user.muscles } }, function (error, foundMuscle) {
+            const Cardios = await CardioModel.find({'_id': { $in: user.Cardios } }, function (error, foundCardio) {
                 if(error){
                     console.log(error);
                 } else {
-                    res.send(foundMuscle);
+                    res.send(foundCardio);
                 }
             });
         } catch (error) {
@@ -73,21 +73,21 @@ const MuscleController = {
         }
     },
 
-    async getMuscle(req, res) {
+    async getCardio(req, res) {
         try {  
             console.log(req);
             const user = await UserModel.findOne({
                 _id: req.user._id
             });
 
-            res.send(user.muscles);
+            res.send(user.Cardios);
         } catch (error) {
             console.log(error);
             res.status(403).send({success: false, msg: 'Failed to get Gainz'});
         }
     },
 
-    async deleteMuscle(req, res) {
+    async deleteCardio(req, res) {
         try {
             const user = await UserModel.findOne({
                 username: res.params.username
@@ -96,15 +96,15 @@ const MuscleController = {
             if (!user) {
                 console.log("User not found");
             } else {
-                console.log(user.muscles);
+                console.log(user.Cardios);
                 console.log(req.params.id);
-                user.muscles.splice(user.muscles.indexOf(req.params.id), 1);
-                console.log(user.muscles);
-                MuscleModel.findOneAndDelete({ _id: req.params.id }, (err, deletedMuscle) => {
+                user.Cardios.splice(user.Cardios.indexOf(req.params.id), 1);
+                console.log(user.Cardios);
+                CardioModel.findOneAndDelete({ _id: req.params.id }, (err, deletedCardio) => {
                   if (err) {
                     console.log(err);
                     } else {
-                    console.log(deletedMuscle._id);
+                    console.log(deletedCardio._id);
                     }
                 });
                 user.save();
@@ -117,4 +117,4 @@ const MuscleController = {
     }
 };
 
-export default MuscleControlller;
+export default CardioController;

@@ -1,5 +1,5 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+import mongoose from 'mongoose';
+const Schema = mongoose.Schema;
 
 var MuscleSchema = new Schema({
     name: {
@@ -15,4 +15,4 @@ var MuscleSchema = new Schema({
     ],
 });
 
-module.exports = mongoose.model('Muscle', MuscleSchema);
+export default mongoose.model('MuscleModel', MuscleSchema);

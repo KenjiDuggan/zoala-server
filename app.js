@@ -1,10 +1,11 @@
-const express = require('express');
-const cookieParser = require('cookie-parser');
-const morgan = require('morgan');
-const mongoose = require('mongoose');
-const config = require('./config/database');
-const cors = require('cors');
-const bodyParser = require('body-parser');
+import express from 'express';
+import cookieParser from 'cookie-parser';
+import morgan from 'morgan';
+import mongoose from 'mongoose';
+import config from './config/database';
+import cors from 'cors';
+import bodyParser from 'body-parser';
+ 
 const app = express();
 
 app.use(cors());
@@ -14,20 +15,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(bodyParser.json());
-app.use(function(err, req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-  res.status(err.status || 500);
-  res.render('error');
-});
-
-app.set('view engine', 'jade');
-require("./routes/routes")(app);
+const routes = require('./routes/routes.js');
+app.use("/", routes);
 
 app.get('/', function(req, res) {
-  res.send('Page under construction.');
+  res.send('Page under importruction.');
 });
 
 mongoose.connect(config.database, { useNewUrlParser: true });
@@ -36,3 +28,4 @@ app.listen(8081, () => {
   console.log('Server is listening on: ' + 8081);
 });
 
+module.exports = app;

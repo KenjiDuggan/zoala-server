@@ -1,6 +1,6 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
-var bcrypt = require('bcrypt-nodejs');
+import mongoose from 'mongoose';
+const Schema = mongoose.Schema;
+import bcrypt from 'bcrypt-nodejs';
 
 var UserSchema = new Schema({
   email: {
@@ -59,4 +59,4 @@ UserSchema.methods.comparePassword = function (passw, cb) {
     });
 };
 
-module.exports = mongoose.model('User', UserSchema);
+export default mongoose.model('UserModel', UserSchema);

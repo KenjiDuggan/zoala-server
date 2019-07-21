@@ -1,13 +1,11 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+import mongoose from 'mongoose';
+const Schema = mongoose.Schema;
 
-var SleepSchema = new Schema({
+var SleepMuscleSchema = new Schema({
+
     schedule: [
 
     ],
-    stats: [
-
-    ]
 });
 
-module.exports = mongoose.model('Sleep', SleepSchema);
+export default mongoose.model('SleepModel', SleepSchema);

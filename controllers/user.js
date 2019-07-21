@@ -1,17 +1,17 @@
-const passport = require('passport');
-const config = require('../config/database');
+import passport from 'passport';
+import config from '../config/database';
 require('../config/passport')(passport);
-const jwt = require('jsonwebtoken');
-const User = require("../models/user");
+import jwt from 'jsonwebtoken';
+import UserModel from "../models/user";
 
-module.exports = {
+const user = {
 
     async register(req, res) {
         try {
           if(!req.body.username || !req.body.password || !req.body.email){
             res.json({success: false, msg: 'Please pass username and password.'});
           } else {
-          const user = await new User({
+          const user = await new UserModel({
             username: req.body.username,
             email: req.body.email,
             password: req.body.password,
@@ -37,7 +37,7 @@ module.exports = {
         try {
             const email = req.body.email;
 
-            await User.findOne({
+            await UserModel.findOne({
                 email: email
             }, function(err, user) {
               if (err) throw err;
@@ -49,7 +49,7 @@ module.exports = {
                       const token = jwt.sign(user.toJSON(), config.secret, {
                         expiresIn: 604800
                       });
-                      res.send({success: true, token: 'JWT ' + token});
+                      res.send({success: true, token: 'JWT ' + token, username: user.username});
                     } else {
                       res.status(401).send({success: false, msg: 'Authentication failed. Wrong password.'});
                     }
@@ -67,3 +67,5 @@ module.exports = {
      }
 
 }
+
+export default UserController;

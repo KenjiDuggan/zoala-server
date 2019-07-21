@@ -1,5 +1,5 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+import mongoose from 'mongoose';
+const Schema = mongoose.Schema;
 
 var FoodSchema = new Schema({
     name: {
@@ -10,12 +10,9 @@ var FoodSchema = new Schema({
         type: String,
         required: true,
     },
-    type: {
-        type: String
-    },
     schedule: [
 
     ],
 });
 
-module.exports = mongoose.model('Food', FoodSchema);
+export default mongoose.model('FoodModel', FoodSchema);
