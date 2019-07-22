@@ -4,7 +4,7 @@ require('../config/passport')(passport);
 import jwt from 'jsonwebtoken';
 import UserModel from "../models/user";
 
-const user = {
+const UserController = {
 
     async register(req, res) {
         try {

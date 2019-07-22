@@ -5,6 +5,8 @@ import mongoose from 'mongoose';
 import config from './config/database';
 import cors from 'cors';
 import bodyParser from 'body-parser';
+import {MuscleRouter} from './routes/muscle.js';
+import {UserRouter} from './routes/user.js';
  
 const app = express();
 
@@ -15,8 +17,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(bodyParser.json());
-const routes = require('./routes/routes.js');
-app.use("/", routes);
+
+app.use('/', UserRouter);
+app.use('/', MuscleRouter);
 
 app.get('/', function(req, res) {
   res.send('Page under importruction.');
@@ -27,5 +30,3 @@ mongoose.connect(config.database, { useNewUrlParser: true });
 app.listen(8081, () => {
   console.log('Server is listening on: ' + 8081);
 });
-
-module.exports = app;

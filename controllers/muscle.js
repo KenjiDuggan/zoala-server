@@ -117,4 +117,4 @@ const MuscleController = {
     }
 };
 
-export default MuscleControlller;
+export default MuscleController;
