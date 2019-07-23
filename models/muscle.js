@@ -15,4 +15,4 @@ var MuscleSchema = new Schema({
     ],
 });
 
-export default mongoose.model('MuscleModel', MuscleSchema);
+module.exports = mongoose.model('MuscleModel', MuscleSchema);

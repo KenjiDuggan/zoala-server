@@ -1,11 +1,10 @@
-import MuscleModel from '../models/muscle';
-import UserModel from '../models/user';
+const MuscleModel = require('../models/muscle');
+const UserModel = require('../models/user');
 
 const MuscleController = {
 
     async postMuscle(req, res) {
         try {
-            let username = req.body.username;
             let name, description;
 
             if (req.body.name == "")
@@ -18,13 +17,16 @@ const MuscleController = {
             else
                 description = req.body.description;
 
-            console.log(req);
-            const user = await UserModel.findOne({
-                username: username,
+            console.log(req.body);
+
+            const user = await UserModel.find({
+                username: req.user.username
+            }, function(err, item) {
+                res.send(item);
             });
 
             if (!user) {
-                res.json({success: true, msg: 'Successful created new Muscle under current user.'});
+                res.json({success: false, msg: 'No user under this account'});
             }
 
             await MuscleModel.create({
@@ -47,11 +49,11 @@ const MuscleController = {
                     }
                 )
                 console.log(muscle);
-
                 }
             })
         } catch (error) {
-            res.status(403).send({success: false, msg: 'Unauthorized.'});
+            console.log(error);
+            res.status(403).send({success: false, msg: 'Unauthorized, y tho.'});
         }
     },
 

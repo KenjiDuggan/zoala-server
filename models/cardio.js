@@ -15,4 +15,4 @@ var CardioSchema = new Schema({
     ],
 });
 
-export default mongoose.model('CardioModel', CardioSchema);
+module.exports = mongoose.model('CardioModel', CardioSchema);

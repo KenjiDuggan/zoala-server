@@ -14,5 +14,5 @@ var FoodSchema = new Schema({
 
     ],
 });
-
-export default mongoose.model('FoodModel', FoodSchema);
+ 
+module.exports = mongoose.model('FoodModel', FoodSchema);

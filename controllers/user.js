@@ -2,7 +2,7 @@ import passport from 'passport';
 import config from '../config/database';
 require('../config/passport')(passport);
 import jwt from 'jsonwebtoken';
-import UserModel from "../models/user";
+const UserModel = require("../models/user");
 
 const UserController = {
 
@@ -37,25 +37,24 @@ const UserController = {
         try {
             const email = req.body.email;
 
-            await UserModel.findOne({
-                email: email
-            }, function(err, user) {
-              if (err) throw err;
-              if (!user) {
-                res.status(401).send({success: false, msg: 'Authentication failed. User not found.'});
-                } else {
-                  user.comparePassword(req.body.password, function (err, isMatch) {
-                    if (isMatch && !err) {
-                      const token = jwt.sign(user.toJSON(), config.secret, {
-                        expiresIn: 604800
-                      });
-                      res.send({success: true, token: 'JWT ' + token, username: user.username});
-                    } else {
-                      res.status(401).send({success: false, msg: 'Authentication failed. Wrong password.'});
-                    }
+            const user = await UserModel.findOne({
+                // email: email
+            })
+            console.log(user);
+            if(!user) {
+              res.status(401).send({success: false, msg: 'Authentication failed. User not found.'});
+            } else {
+              user.comparePassword(req.body.password, function(err, isMatch) {
+                if(isMatch && !err) {
+                  const token = jwt.sign(user.toJSON(), config.secret, {
+                    expiresIn: 604800
                   });
+                  res.send({success: true, token: 'Bearer ' + token, username: user.username});
+                } else {
+                res.status(401).send({success: false, msg: 'Authentication failed. Wrong password.'});
                 }
               })
+            }
         } catch (error) {
             console.log(error);
             res.status(500).send({success: false, msg: 'Authentication failed. Wrong information or no account in your possesion.'});

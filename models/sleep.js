@@ -1,11 +1,11 @@
 import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
-var SleepMuscleSchema = new Schema({
+var SleepSchema = new Schema({
 
     schedule: [
 
     ],
 });
 
-export default mongoose.model('SleepModel', SleepSchema);
+module.exports = mongoose.model('SleepModel', SleepSchema);

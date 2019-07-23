@@ -18,13 +18,13 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(bodyParser.json());
 
-app.use('/', UserRouter);
-app.use('/', MuscleRouter);
+app.use('/auth/', UserRouter);
+app.use('/api/', MuscleRouter);
 
 app.get('/', function(req, res) {
   res.send('Page under importruction.');
 });
-
+mongoose.set('useCreateIndex', true);
 mongoose.connect(config.database, { useNewUrlParser: true });
 
 app.listen(8081, () => {
