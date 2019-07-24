@@ -6,6 +6,7 @@ import config from './config/database';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import {MuscleRouter} from './routes/muscle.js';
+import {SleepRouter} from './routes/sleep.js'
 import {UserRouter} from './routes/user.js';
  
 const app = express();
@@ -19,7 +20,8 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 
 app.use('/auth/', UserRouter);
-app.use('/api/', MuscleRouter);
+app.use('/api/muscle/', MuscleRouter);
+app.use('/api/sleep/', SleepRouter);
 
 app.get('/', function(req, res) {
   res.send('Page under importruction.');

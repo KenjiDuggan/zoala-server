@@ -1,23 +1,10 @@
-const MuscleModel = require('../models/muscle');
+const SleepModel = require('../models/sleep');
 const UserModel = require('../models/user');
 
-const MuscleController = {
+const SleepController = {
 
-    async postMuscle(req, res) {
+    async postSleep(req, res) {
         try {
-            let name, description;
-
-            if (req.body.name == "")
-                name = "N/A";
-            else
-                name = req.body.name;
-
-            if (req.body.description == "")
-                description = "N/A";
-            else
-                description = req.body.description;
-
-            console.log(req.body);
 
             const user = await UserModel.find({
                 _id: req.user._id
@@ -29,17 +16,15 @@ const MuscleController = {
                 res.json({success: false, msg: 'No user under this account'});
             }
 
-            await MuscleModel.create({
-                name: name,
-                description: description,
-                schedule: req.body.days
-            }, (error, muscle) => {
+            await SleepModel.create({
+                schedule: req.body.day
+            }, (error, Sleep) => {
                 if (error){
                     console.log(error);
                 } else {
                 UserModel.findOneAndUpdate(
                     {_id: req.user._id},
-                    {$push: {muscles: muscle}},
+                    {$push: {sleeps: sleep}},
                     function(error, success) {
                         if (error) {
                             console.log(error);
@@ -48,7 +33,7 @@ const MuscleController = {
                         }
                     }
                 )
-                console.log(muscle);
+                console.log(sleep);
                 }
             })
         } catch (error) {
@@ -57,17 +42,17 @@ const MuscleController = {
         }
     },
 
-    async findMuscle(req, res) {
+    async findSleep(req, res) {
         try {
             const user = await UserModel.findOne({
                 username: req.body.username
             });
 
-            const muscles = await MuscleModel.find({'_id': { $in: user.muscles } }, function (error, foundMuscle) {
+            const sleeps = await SleepModel.find({'_id': { $in: user.sleeps } }, function (error, foundSleep) {
                 if(error){
                     console.log(error);
                 } else {
-                    res.send(foundMuscle);
+                    res.send(foundSleep);
                 }
             });
         } catch (error) {
@@ -75,21 +60,21 @@ const MuscleController = {
         }
     },
 
-    async getMuscle(req, res) {
+    async getSleep(req, res) {
         try {  
             console.log(req);
             const user = await UserModel.findOne({
                 _id: req.user._id
             });
 
-            res.send(user.muscles);
+            res.send(user.sleeps);
         } catch (error) {
             console.log(error);
             res.status(403).send({success: false, msg: 'Failed to get Gainz'});
         }
     },
 
-    async deleteMuscle(req, res) {
+    async deleteSleep(req, res) {
         try {
             const user = await UserModel.findOne({
                 username: res.params.username
@@ -98,15 +83,15 @@ const MuscleController = {
             if (!user) {
                 console.log("User not found");
             } else {
-                console.log(user.muscles);
+                console.log(user.sleeps);
                 console.log(req.params.id);
-                user.muscles.splice(user.muscles.indexOf(req.params.id), 1);
-                console.log(user.muscles);
-                MuscleModel.findOneAndDelete({ _id: req.params.id }, (err, deletedMuscle) => {
+                user.Sleeps.splice(user.sleeps.indexOf(req.params.id), 1);
+                console.log(user.Sleeps);
+                SleepModel.findOneAndDelete({ _id: req.params.id }, (err, deletedSleep) => {
                   if (err) {
                     console.log(err);
                     } else {
-                    console.log(deletedMuscle._id);
+                    console.log(deletedSleep._id);
                     }
                 });
                 user.save();
@@ -118,4 +103,4 @@ const MuscleController = {
     }
 };
 
-export default MuscleController;
+export default SleepController;
