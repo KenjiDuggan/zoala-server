@@ -17,8 +17,8 @@ const SleepController = {
             }
 
             await SleepModel.create({
-                schedule: req.body.day
-            }, (error, Sleep) => {
+                schedule: req.body.hours
+            }, (error, sleep) => {
                 if (error){
                     console.log(error);
                 } else {
@@ -55,6 +55,7 @@ const SleepController = {
                     res.send(foundSleep);
                 }
             });
+            console.log(sleeps);
         } catch (error) {
             res.status(403).send({success: false, msg: 'Failed to get Gainz plan by id.'});
         }

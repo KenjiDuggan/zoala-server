@@ -70,6 +70,7 @@ const MuscleController = {
                     res.send(foundMuscle);
                 }
             });
+            console.log(muscles);
         } catch (error) {
             res.status(403).send({success: false, msg: 'Failed to get Gainz plan by id.'});
         }
