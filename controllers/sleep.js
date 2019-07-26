@@ -79,7 +79,6 @@ const SleepController = {
             const user = await UserModel.findOne({
                 username: res.params.username
             });
-
             if (!user) {
                 console.log("User not found");
             } else {

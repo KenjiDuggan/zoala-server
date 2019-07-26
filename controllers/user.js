@@ -49,7 +49,7 @@ const UserController = {
                   const token = jwt.sign(user.toJSON(), config.secret, {
                     expiresIn: 604800
                   });
-                  res.send({success: true, token: 'Bearer ' + token, username: user.username});
+                  res.send({success: true, token: token, username: user.username});
                 } else {
                 res.status(401).send({success: false, msg: 'Authentication failed. Wrong password.'});
                 }
