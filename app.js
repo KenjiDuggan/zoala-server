@@ -28,7 +28,7 @@ app.use('/api/food/', FoodRouter);
 app.use('/api/sleep/', SleepRouter);
 
 app.get('/', function(req, res) {
-  res.send('Page under importruction.');
+  res.send('Page under construction.');
 });
 
 mongoose.set('useCreateIndex', true);
