@@ -5,7 +5,6 @@ import jwt from 'jsonwebtoken';
 const UserModel = require("../models/user");
 
 const OK = 200; 
-const CREATED = 201; 
 const BAD_REQUEST = 400; 
 const UNAUTHORIZED = 401;
 const SERVER_ERROR = 500; 
@@ -26,7 +25,6 @@ const UserController = {
             food: [],
             sleep: []
           });
-
           user.save(function(err) {
             if (err) {
                 return res.status(BAD_REQUEST).json({success: false, msg: 'Username already exists.'});
@@ -41,11 +39,9 @@ const UserController = {
 
     async login(req, res) {
         try {
-            let email = req.body.email;
             const user = await UserModel.findOne({
                 email: req.body.email
             })
-            console.log(user);
             if(!user) {
               res.status(BAD_REQUEST).send({success: false, msg: 'Authentication failed. User not found.'});
             } else {
@@ -54,7 +50,7 @@ const UserController = {
                   const token = jwt.sign(user.toJSON(), config.secret, {
                     expiresIn: 604800
                   });
-                  res.status(OK).send({success: true, token: token, username: user.username});
+                res.status(OK).send({success: true, token: token, username: user.username});
                 } else {
                 res.status(UNAUTHORIZED).send({success: false, msg: 'Authentication failed. Wrong password.'});
                 }
