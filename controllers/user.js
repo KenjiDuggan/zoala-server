@@ -4,12 +4,18 @@ require('../config/passport')(passport);
 import jwt from 'jsonwebtoken';
 const UserModel = require("../models/user");
 
+const OK = 200; 
+const CREATED = 201; 
+const BAD_REQUEST = 400; 
+const UNAUTHORIZED = 401;
+const SERVER_ERROR = 500; 
+
 const UserController = {
 
     async register(req, res) {
         try {
           if(!req.body.username || !req.body.password || !req.body.email){
-            res.json({success: false, msg: 'Please pass username and password.'});
+            res.status(BAD_REQUEST).json({success: false, msg: 'Please pass username and password.'});
           } else {
           const user = await new UserModel({
             username: req.body.username,
@@ -23,41 +29,40 @@ const UserController = {
 
           user.save(function(err) {
             if (err) {
-                return res.json({success: false, msg: 'Username already exists.'});
+                return res.status(BAD_REQUEST).json({success: false, msg: 'Username already exists.'});
               }
-              res.json({success: true, msg: 'Successful created new user.'});
+              res.status(OK).json({success: true, msg: 'Successful created new user.'});
           });
           }
         } catch(err) {
-            return res.json({success: false, msg: 'Error caught, please try again.'});
+            return res.status(SERVER_ERROR).json({success: false, msg: 'Error caught, please try again.'});
         }
     },
 
     async login(req, res) {
         try {
-            const email = req.body.email;
-
+            let email = req.body.email;
             const user = await UserModel.findOne({
-                // email: email
+                email: req.body.email
             })
             console.log(user);
             if(!user) {
-              res.status(401).send({success: false, msg: 'Authentication failed. User not found.'});
+              res.status(BAD_REQUEST).send({success: false, msg: 'Authentication failed. User not found.'});
             } else {
               user.comparePassword(req.body.password, function(err, isMatch) {
                 if(isMatch && !err) {
                   const token = jwt.sign(user.toJSON(), config.secret, {
                     expiresIn: 604800
                   });
-                  res.send({success: true, token: token, username: user.username});
+                  res.status(OK).send({success: true, token: token, username: user.username});
                 } else {
-                res.status(401).send({success: false, msg: 'Authentication failed. Wrong password.'});
+                res.status(UNAUTHORIZED).send({success: false, msg: 'Authentication failed. Wrong password.'});
                 }
               })
             }
         } catch (error) {
             console.log(error);
-            res.status(500).send({success: false, msg: 'Authentication failed. Wrong information or no account in your possesion.'});
+            res.status(SERVER_ERROR).send({success: false, msg: 'Authentication failed. Wrong information or no account in your possesion.'});
         }
     },
 
