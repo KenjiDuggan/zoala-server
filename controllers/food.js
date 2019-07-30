@@ -82,7 +82,7 @@ const FoodController = {
             if (!user) {
                 res.status(NOT_FOUND).json({success: false, msg: 'No user under this account'});
             } else {
-                user.Foods.splice(user.Foods.indexOf(req.params.id), 1);
+                user.foods.splice(user.foods.indexOf(req.params.id), 1);
                 FoodModel.findOneAndDelete({ _id: req.params.id }, (err, deletedFood) => {
                   if (err) {
                     console.log(err);

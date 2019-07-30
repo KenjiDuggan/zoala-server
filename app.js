@@ -5,6 +5,7 @@ import mongoose from 'mongoose';
 import config from './config/database';
 import cors from 'cors';
 import bodyParser from 'body-parser';
+import {GoalRouter} from './routes/goal.js';
 import {MuscleRouter} from './routes/muscle.js';
 import {SleepRouter} from './routes/sleep.js';
 import {UserRouter} from './routes/user.js';
@@ -22,6 +23,7 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 
 app.use('/auth/', UserRouter);
+app.use('/api/goal/', GoalRouter);
 app.use('/api/muscle/', MuscleRouter);
 app.use('/api/cardio/', CardioRouter);
 app.use('/api/food/', FoodRouter);

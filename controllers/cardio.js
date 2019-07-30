@@ -53,7 +53,7 @@ const CardioController = {
             }, function(err, item) {
                 res.status(OK).send(item);
             });
-            await CardioModel.find({'_id': { $in: user.Cardios } }, function (error, foundCardio) {
+            await CardioModel.find({'_id': { $in: user.cardios } }, function (error, foundCardio) {
                 if(error){
                     res.status(BAD_REQUEST).send({error: error});
                 } else {
@@ -70,7 +70,7 @@ const CardioController = {
             const user = await UserModel.findOne({
                 _id: req.user._id
             });
-            res.status(OK).send(user.Cardios);
+            res.status(OK).send(user.cardios);
         } catch (error) {
             res.status(BAD_REQUEST).send({success: false, msg: 'Failed to get Gainz'});
         }
@@ -81,14 +81,13 @@ const CardioController = {
             const user = await UserModel.findOne({
                 username: res.params.username
             });
-
             if (!user) {
                 res.status(BAD_REQUEST).json({success: false, msg: 'No user under this account'});
             } else {
-                console.log(user.Cardios);
+                console.log(user.cardios);
                 console.log(req.params.id);
-                user.Cardios.splice(user.Cardios.indexOf(req.params.id), 1);
-                console.log(user.Cardios);
+                user.Cardios.splice(user.cardios.indexOf(req.params.id), 1);
+                console.log(user.cardios);
                 CardioModel.findOneAndDelete({ _id: req.params.id }, (err, deletedCardio) => {
                   if (err) {
                     console.log(err);
@@ -101,7 +100,7 @@ const CardioController = {
             }
 
         } catch (error) {
-            res.status(403).send({success: false, msg: 'Failed to delete Cardio plan.'});
+            res.status(SERVER_ERROR).send({success: false, msg: 'Failed to delete Cardio plan.'});
         }
     }
 };

@@ -11,17 +11,14 @@ const SleepController = {
 
     async postSleep(req, res) {
         try {
-
             const user = await UserModel.find({
                 _id: req.user._id
             }, function(err, item) {
                 res.status(OK).send(item);
             });
-
             if (!user) {
                 res.status(NOT_FOUND).json({success: false, msg: 'No user under this account'});
             }
-
             await SleepModel.create({
                 schedule: req.body.hours
             }, (error, sleep) => {
@@ -36,9 +33,7 @@ const SleepController = {
                             res.status(CREATED).json({msg: 'UserModel has been updated.'});
                         }
                     }
-                )
-                console.log(sleep);
-                }
+                )}
             })
         } catch (error) {
             console.log(error);
@@ -86,8 +81,8 @@ const SleepController = {
             } else {
                 console.log(user.sleeps);
                 console.log(req.params.id);
-                user.Sleeps.splice(user.sleeps.indexOf(req.params.id), 1);
-                console.log(user.Sleeps);
+                user.sleeps.splice(user.sleeps.indexOf(req.params.id), 1);
+                console.log(user.sleeps);
                 SleepModel.findOneAndDelete({ _id: req.params.id }, (err, deletedSleep) => {
                   if (err) {
                     console.log(err);

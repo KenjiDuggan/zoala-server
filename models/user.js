@@ -16,6 +16,9 @@ var UserSchema = new Schema({
         type: String,
         required: true
     },
+    goals: [
+//goal model
+    ],
   muscles: [
 //muscle model
   ],
