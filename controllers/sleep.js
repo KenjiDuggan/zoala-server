@@ -1,6 +1,12 @@
 const SleepModel = require('../models/sleep');
 const UserModel = require('../models/user');
 
+const OK = 200; 
+const CREATED = 201; 
+const BAD_REQUEST = 400; 
+const NOT_FOUND = 403;
+const SERVER_ERROR = 500; 
+
 const SleepController = {
 
     async postSleep(req, res) {
@@ -9,11 +15,11 @@ const SleepController = {
             const user = await UserModel.find({
                 _id: req.user._id
             }, function(err, item) {
-                res.send(item);
+                res.status(OK).send(item);
             });
 
             if (!user) {
-                res.json({success: false, msg: 'No user under this account'});
+                res.status(NOT_FOUND).json({success: false, msg: 'No user under this account'});
             }
 
             await SleepModel.create({
@@ -22,14 +28,12 @@ const SleepController = {
                 if (error){
                     console.log(error);
                 } else {
-                UserModel.findOneAndUpdate(
-                    {_id: req.user._id},
-                    {$push: {sleeps: sleep}},
+                UserModel.findOneAndUpdate( {_id: req.user._id}, {$push: {sleeps: sleep}},
                     function(error, success) {
                         if (error) {
-                            console.log(error);
+                            res.status(BAD_REQUEST).json({msg: 'Error has occured while trying to update User.'});
                         } else {
-                            console.log(success);
+                            res.status(CREATED).json({msg: 'UserModel has been updated.'});
                         }
                     }
                 )
@@ -38,7 +42,7 @@ const SleepController = {
             })
         } catch (error) {
             console.log(error);
-            res.status(403).send({success: false, msg: 'Unauthorized, y tho.'});
+            res.status(SERVER_ERROR).send({success: false, msg: 'Something does not work.'});
         }
     },
 
@@ -48,30 +52,27 @@ const SleepController = {
                 username: req.body.username
             });
 
-            const sleeps = await SleepModel.find({'_id': { $in: user.sleeps } }, function (error, foundSleep) {
+            await SleepModel.find({'_id': { $in: user.sleeps } }, function (error, foundSleep) {
                 if(error){
-                    console.log(error);
+                    res.status(BAD_REQUEST).json({error: error});
                 } else {
-                    res.send(foundSleep);
+                    res.status(OK).send(foundSleep);
                 }
             });
             console.log(sleeps);
         } catch (error) {
-            res.status(403).send({success: false, msg: 'Failed to get Gainz plan by id.'});
+            res.status(SERVER_ERROR).send({success: false, msg: 'Failed to get Gainz plan by id.'});
         }
     },
 
     async getSleep(req, res) {
         try {  
-            console.log(req);
             const user = await UserModel.findOne({
                 _id: req.user._id
             });
-
-            res.send(user.sleeps);
+            res.status(OK).send(user.sleeps);
         } catch (error) {
-            console.log(error);
-            res.status(403).send({success: false, msg: 'Failed to get Gainz'});
+            res.status(SERVER_ERROR).send({success: false, msg: 'Failed to get Gainz'});
         }
     },
 
@@ -81,7 +82,7 @@ const SleepController = {
                 username: res.params.username
             });
             if (!user) {
-                console.log("User not found");
+                res.status(NOT_FOUND).json({success: false, msg: 'No user under this account'});
             } else {
                 console.log(user.sleeps);
                 console.log(req.params.id);
@@ -98,7 +99,7 @@ const SleepController = {
                 res.send();
             }
         } catch (error) {
-            res.status(403).send({success: false, msg: 'Failed to delete Gainz plan.'});
+            res.status(SERVER_ERROR).send({success: false, msg: 'Failed to delete Gainz plan.'});
         }
     }
 };

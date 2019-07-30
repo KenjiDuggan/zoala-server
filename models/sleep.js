@@ -8,6 +8,9 @@ var SleepSchema = new Schema({
     comment: {
         type: String
     },
+    special: [
+        
+    ]
 });
 
 module.exports = mongoose.model('SleepModel', SleepSchema);

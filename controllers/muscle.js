@@ -5,7 +5,6 @@ const OK = 200;
 const CREATED = 201; 
 const BAD_REQUEST = 400; 
 const NOT_FOUND = 403;
-const UNAUTHORIZED = 401;
 const SERVER_ERROR = 500; 
 
 const MuscleController = {
@@ -17,11 +16,9 @@ const MuscleController = {
             }, function(err, item) {
                 res.status(OK).send(item);
             });
-
             if (!user) {
-                res.status(UNAUTHORIZED).json({success: false, msg: 'No user under this account'});
+                res.status(NOT_FOUND).json({success: false, msg: 'No user under this account'});
             }
-
             await MuscleModel.create({
                 name: name,
                 description: description,
@@ -85,7 +82,7 @@ const MuscleController = {
                 username: res.params.username
             });
             if (!user) {
-                res.status(BAD_REQUEST).json({success: false, msg: 'No user under this account'});
+                res.status(NOT_FOUND).json({success: false, msg: 'No user under this account'});
             } else {
                 user.muscles.splice(user.muscles.indexOf(req.params.id), 1);
                 MuscleModel.findOneAndDelete({ _id: req.params.id }, (err, deletedMuscle) => {
