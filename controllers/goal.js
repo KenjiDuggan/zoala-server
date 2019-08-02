@@ -20,11 +20,11 @@ const GoalController = {
             if (!user) {
                 res.status(NOT_FOUND).json({success: false, msg: 'No user under this account'});
             }
-            await GoalModel.create({
-                name: req.body.name,
-                description: req.body.description,
-                status: req.body.status,
-                schedule: req.body.goals
+            await GoalModel.update({
+                dailie: req.body.dailie,
+                urgent: req.body.urgent,
+                ongoing: req.body.ongoing,
+                health: req.body.health
             }, (error, goal) => 
             {
             if (error){

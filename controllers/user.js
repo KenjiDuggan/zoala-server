@@ -20,6 +20,7 @@ const UserController = {
             username: req.body.username,
             email: req.body.email,
             password: req.body.password,
+            reason: req.body.reason,
             muscle: [],
             cardio: [],
             food: [],
@@ -50,7 +51,7 @@ const UserController = {
                   const token = jwt.sign(user.toJSON(), config.secret, {
                     expiresIn: 604800
                   });
-                res.status(OK).send({success: true, token: token, username: user.username});
+                res.status(OK).send({success: true, token: token, username: user.username, reason: user.reason});
                 } else {
                 res.status(UNAUTHORIZED).send({success: false, msg: 'Authentication failed. Wrong password.'});
                 }
@@ -61,7 +62,6 @@ const UserController = {
             res.status(SERVER_ERROR).send({success: false, msg: 'Authentication failed. Wrong information or no account in your possesion.'});
         }
     },
-
      me(req, res){
         res.send({success: true, msg: 'Good'});
      }

@@ -16,6 +16,9 @@ var UserSchema = new Schema({
         type: String,
         required: true
     },
+  reason: {
+    type: String
+  },
     goals: [
 //goal model
     ],
