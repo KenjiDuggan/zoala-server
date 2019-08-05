@@ -30,7 +30,7 @@ const UserController = {
             if (err) {
                 return res.status(BAD_REQUEST).json({success: false, msg: 'Username already exists.'});
               }
-              res.status(OK).json({success: true, msg: 'Successful created new user.'});
+              res.status(OK).json({success: true, token: token, msg: 'Successful created new user.'});
           });
           }
         } catch(err) {
@@ -44,7 +44,7 @@ const UserController = {
                 email: req.body.email
             })
             if(!user) {
-              res.status(BAD_REQUEST).send({success: false, msg: 'Authentication failed. User not found.'});
+              res.status(BAD_REQUEST).json({success: false, msg: 'Authentication failed. User not found.'});
             } else {
               user.comparePassword(req.body.password, function(err, isMatch) {
                 if(isMatch && !err) {
@@ -53,17 +53,17 @@ const UserController = {
                   });
                 res.status(OK).send({success: true, token: token, username: user.username, reason: user.reason});
                 } else {
-                res.status(UNAUTHORIZED).send({success: false, msg: 'Authentication failed. Wrong password.'});
+                res.status(UNAUTHORIZED).json({success: false, msg: 'Authentication failed. Wrong password.'});
                 }
               })
             }
         } catch (error) {
             console.log(error);
-            res.status(SERVER_ERROR).send({success: false, msg: 'Authentication failed. Wrong information or no account in your possesion.'});
+            res.status(SERVER_ERROR).json({success: false, msg: 'Authentication failed. Wrong information or no account in your possesion.'});
         }
     },
      me(req, res){
-        res.send({success: true, msg: 'Good'});
+        res.json({success: true, msg: 'Good'});
      }
 
 }

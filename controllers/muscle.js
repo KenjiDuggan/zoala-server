@@ -14,33 +14,33 @@ const MuscleController = {
             const user = await UserModel.find({
                 _id: req.user._id
             }, function(err, item) {
-                res.status(OK).send(item);
+                res.status(OK).end(item);
             });
             if (!user) {
-                res.status(NOT_FOUND).json({success: false, msg: 'No user under this account'});
+                res.status(NOT_FOUND).end({success: false, msg: 'No user under this account'});
             }
             await MuscleModel.create({
-                name: name,
-                description: description,
+                name: req.body.name,
+                description: req.body.description,
                 schedule: req.body.days
-            }, (error, muscle) => 
-            {
+            }, (error, muscle) => {
             if (error){
                 console.log(error);
             } else {
-            UserModel.findOneAndUpdate({ _id: req.user._id },{ $push: {muscles: muscle} },
+            console.log(muscle)
+            console.log(req.user._id) 
+            UserModel.findOneAndUpdate({ _id: req.user._id },{ $push: { muscles: muscle } },
                 function(error, success) {
                     if (error) {
-                        res.status(BAD_REQUEST).json({msg: 'Error has occured while trying to updating UserModel.'});
+                        res.status(BAD_REQUEST).end({msg: 'Error has occured while trying to updating UserModel.'});
                     } else {
-                        res.status(CREATED).json({msg: 'UserModel has been updated.'})
+                        res.status(CREATED).end({msg: 'UserModel has been updated.'});
                     }
                 }
             )}
           })
         } catch (error) {
-            console.log(error);
-            res.status(SERVER_ERROR).send({success: false, msg: 'Unauthorized, y tho.'});
+            res.status(SERVER_ERROR).end({success: false, msg: 'Unauthorized, y tho.'});
         }
     },
 
@@ -70,7 +70,9 @@ const MuscleController = {
             const user = await UserModel.findOne({
                 _id: req.user._id
             });
-            res.status(OK).send(user.muscles);
+            console.log(user);
+            console.log(user.muscles);
+            res.status(OK).send({ muscles: user.muscles });
         } catch (error) {
             res.status(SERVER_ERROR).send({success: false, msg: 'Failed to get Gainz'});
         }
@@ -84,7 +86,7 @@ const MuscleController = {
             if (!user) {
                 res.status(NOT_FOUND).json({success: false, msg: 'No user under this account'});
             } else {
-                user.muscles.splice(user.muscles.indexOf(req.params.id), 1);
+                user.muscles.splice(user.muscles.indexOf(req.data.id), 1);
                 MuscleModel.findOneAndDelete({ _id: req.params.id }, (err, deletedMuscle) => {
                   if (err) {
                     console.log(err);

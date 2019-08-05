@@ -14,10 +14,10 @@ const SleepController = {
             const user = await UserModel.find({
                 _id: req.user._id
             }, function(err, item) {
-                res.status(OK).send(item);
+                res.status(OK).end(item);
             });
             if (!user) {
-                res.status(NOT_FOUND).json({success: false, msg: 'No user under this account'});
+                res.status(NOT_FOUND).end({success: false, msg: 'No user under this account'});
             }
             await SleepModel.create({
                 schedule: req.body.hours
@@ -28,16 +28,16 @@ const SleepController = {
                 UserModel.findOneAndUpdate( {_id: req.user._id}, {$push: {sleeps: sleep}},
                     function(error, success) {
                         if (error) {
-                            res.status(BAD_REQUEST).json({msg: 'Error has occured while trying to update User.'});
+                            res.status(BAD_REQUEST).end({msg: 'Error has occured while trying to update User.'});
                         } else {
-                            res.status(CREATED).json({msg: 'UserModel has been updated.'});
+                            res.status(CREATED).end({msg: 'UserModel has been updated.'});
                         }
                     }
                 )}
             })
         } catch (error) {
             console.log(error);
-            res.status(SERVER_ERROR).send({success: false, msg: 'Something does not work.'});
+            res.status(SERVER_ERROR).end({success: false, msg: 'Something does not work.'});
         }
     },
 
@@ -49,14 +49,14 @@ const SleepController = {
 
             await SleepModel.find({'_id': { $in: user.sleeps } }, function (error, foundSleep) {
                 if(error){
-                    res.status(BAD_REQUEST).json({error: error});
+                    res.status(BAD_REQUEST).end({error: error});
                 } else {
-                    res.status(OK).send(foundSleep);
+                    res.status(OK).end(foundSleep);
                 }
             });
             console.log(sleeps);
         } catch (error) {
-            res.status(SERVER_ERROR).send({success: false, msg: 'Failed to get Gainz plan by id.'});
+            res.status(SERVER_ERROR).end({success: false, msg: 'Failed to get Gainz plan by id.'});
         }
     },
 
@@ -65,9 +65,9 @@ const SleepController = {
             const user = await UserModel.findOne({
                 _id: req.user._id
             });
-            res.status(OK).send(user.sleeps);
+            res.status(OK).end(user.sleeps);
         } catch (error) {
-            res.status(SERVER_ERROR).send({success: false, msg: 'Failed to get Gainz'});
+            res.status(SERVER_ERROR).end({success: false, msg: 'Failed to get Gainz'});
         }
     },
 
@@ -77,7 +77,7 @@ const SleepController = {
                 username: res.params.username
             });
             if (!user) {
-                res.status(NOT_FOUND).json({success: false, msg: 'No user under this account'});
+                res.status(NOT_FOUND).end({success: false, msg: 'No user under this account'});
             } else {
                 console.log(user.sleeps);
                 console.log(req.params.id);
@@ -91,10 +91,10 @@ const SleepController = {
                     }
                 });
                 user.save();
-                res.send();
+                res.end();
             }
         } catch (error) {
-            res.status(SERVER_ERROR).send({success: false, msg: 'Failed to delete Gainz plan.'});
+            res.status(SERVER_ERROR).end({success: false, msg: 'Failed to delete Gainz plan.'});
         }
     }
 };

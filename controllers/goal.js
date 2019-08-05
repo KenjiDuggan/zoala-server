@@ -14,13 +14,12 @@ const GoalController = {
         try {
             const user = await UserModel.find({
                 _id: req.user._id
-            }, function(err, item) {
-                res.status(OK).send(item);
             });
+            
             if (!user) {
-                res.status(NOT_FOUND).json({success: false, msg: 'No user under this account'});
+                res.status(NOT_FOUND).end({success: false, msg: 'No user under this account'});
             }
-            await GoalModel.update({
+            await GoalModel.create({
                 dailie: req.body.dailie,
                 urgent: req.body.urgent,
                 ongoing: req.body.ongoing,
@@ -33,16 +32,16 @@ const GoalController = {
             UserModel.findOneAndUpdate({ _id: req.user._id },{ $push: {goals: goal} },
                 function(error, success) {
                     if (error) {
-                        res.status(BAD_REQUEST).json({msg: 'Error has occured while trying to updating UserModel.'});
+                        res.status(BAD_REQUEST).end({msg: 'Error has occured while trying to updating UserModel.'});
                     } else {
-                        res.status(CREATED).json({msg: 'UserModel has been updated.'})
+                        res.status(CREATED).end({msg: 'UserModel has been updated.'})
                     }
                 }
             )}
           })
         } catch (error) {
             console.log(error);
-            res.status(SERVER_ERROR).send({success: false, msg: 'Something went wrong.'});
+            res.status(SERVER_ERROR).end({success: false, msg: 'Something went wrong.'});
         }
     },
 
@@ -51,19 +50,19 @@ const GoalController = {
             const user = await UserModel.findOne({
                 username: req.body.username
             }, function(err, item) {
-                res.status(OK).send(item);
+                res.status(OK).end(item);
             });
             await GoalModel.find({'_id': { $in: user.goals } }, 
             function (error, foundGoal) {
                 if(error){
-                    res.status(BAD_REQUEST).json({error: error});
+                    res.status(BAD_REQUEST).end({error: error});
                 } else {
-                    res.status(OK).send(foundGoal);
+                    res.status(OK).end(foundGoal);
                 }
             });
             console.log(foundGoals);
         } catch (error) {
-            res.status(SERVER_ERROR).send({success: false, msg: 'Failed to get Goals plan by id.'});
+            res.status(SERVER_ERROR).end({success: false, msg: 'Failed to get Goals plan by id.'});
         }
     },
 
@@ -72,9 +71,9 @@ const GoalController = {
             const user = await UserModel.findOne({
                 _id: req.user._id
             });
-            res.status(OK).send(user.goals);
+            res.status(OK).end(user.goals);
         } catch (error) {
-            res.status(SERVER_ERROR).send({success: false, msg: 'Failed to get goals'});
+            res.status(SERVER_ERROR).end({success: false, msg: 'Failed to get goals'});
         }
     },
 
@@ -84,7 +83,7 @@ const GoalController = {
                 username: res.params.username
             });
             if (!user) {
-                res.status(NOT_FOUND).json({success: false, msg: 'No user under this account'});
+                res.status(NOT_FOUND).end({success: false, msg: 'No user under this account'});
             } else {
                 user.goals.splice(user.goals.indexOf(req.params.id), 1);
                 GoalModel.findOneAndDelete({ _id: req.params.id }, (err, deletedGoal) => {
@@ -95,10 +94,10 @@ const GoalController = {
                     }
                 });
                 user.save();
-                res.status(OK).json({msg: 'Goal has been deleted by Id from User.'});
+                res.status(OK).end({msg: 'Goal has been deleted by Id from User.'});
             }
         } catch (error) {
-            res.status(SERVER_ERROR).json({success: false, msg: 'Failed to delete Goals plan.'});
+            res.status(SERVER_ERROR).end({success: false, msg: 'Failed to delete Goals plan.'});
         }
     }
 };

@@ -14,10 +14,10 @@ const FoodController = {
             const user = await UserModel.findOne({
                 _id: req.user._id
             }, function(err, item) {
-                res.status(OK).send(item);
+                res.status(OK).end(item);
             });
             if (!user) {
-                res.status(NOT_FOUND).json({success: true, msg: 'Successful created new Food under current user.'});
+                res.status(NOT_FOUND).end({success: true, msg: 'Successful created new Food under current user.'});
             }
             await FoodModel.create({
                 name: name,
@@ -30,17 +30,17 @@ const FoodController = {
                 UserModel.findOneAndUpdate( {_id: req.user._id}, {$push: {foods: food}},
                     function(error, success) {
                         if (error) {
-                            res.status(BAD_REQUEST).json({msg: 'Error has occured.'});
+                            res.status(BAD_REQUEST).end({msg: 'Error has occured.'});
                             console.log(error);
                         } else {
-                            res.status(CREATED).json({msg: 'Usermodel has been updated.'});
+                            res.status(CREATED).end({msg: 'Usermodel has been updated.'});
                             console.log(success);
                         }
                     }
                 )}
             })
         } catch (error) {
-            res.status(SERVER_ERROR).send({success: false, msg: 'Unauthorized.'});
+            res.status(SERVER_ERROR).end({success: false, msg: 'Unauthorized.'});
         }
     },
 
@@ -49,17 +49,17 @@ const FoodController = {
             const user = await UserModel.findOne({
                 username: req.body.username
             }, function(err, item) {
-                res.status(OK).send(item);
+                res.status(OK).end(item);
             });
             await FoodModel.find({'_id': { $in: user.foods } }, function (error, foundFood) {
                 if(error){
-                    res.status(BAD_REQUEST).send({error: error});
+                    res.status(BAD_REQUEST).end({error: error});
                 } else {
-                    res.status(OK).send(foundFood);
+                    res.status(OK).end(foundFood);
                 }
             });
              } catch (error) { 
-            res.status(SERVER_ERROR).send({success: false, msg: 'Failed to get Gainz plan by id.'});
+            res.status(SERVER_ERROR).end({success: false, msg: 'Failed to get Gainz plan by id.'});
         }
     },
 
@@ -68,9 +68,9 @@ const FoodController = {
             const user = await UserModel.findOne({
                 _id: req.user._id
             });
-            res.status(OK).send(user.foods);
+            res.status(OK).end(user.foods);
         } catch (error) {
-            res.status(BAD_REQUEST).send({success: false, msg: 'Failed to get Gainz'});
+            res.status(BAD_REQUEST).end({success: false, msg: 'Failed to get Gainz'});
         }
     },
 
@@ -80,7 +80,7 @@ const FoodController = {
                 username: req.params.username
             });
             if (!user) {
-                res.status(NOT_FOUND).json({success: false, msg: 'No user under this account'});
+                res.status(NOT_FOUND).end({success: false, msg: 'No user under this account'});
             } else {
                 user.foods.splice(user.foods.indexOf(req.params.id), 1);
                 FoodModel.findOneAndDelete({ _id: req.params.id }, (err, deletedFood) => {
@@ -91,11 +91,11 @@ const FoodController = {
                     }
                 });
                 user.save();
-                res.status(OK).json({msg: 'Food has been deleted by Id from User.'});
+                res.status(OK).end({msg: 'Food has been deleted by Id from User.'});
             }
 
         } catch (error) {
-            res.status(SERVER_ERROR).send({success: false, msg: 'Failed to delete Food plan.'});
+            res.status(SERVER_ERROR).end({success: false, msg: 'Failed to delete Food plan.'});
         }
     }
 };
