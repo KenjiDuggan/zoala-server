@@ -12,12 +12,12 @@ const MuscleController = {
     async postMuscle(req, res) {
         try {
             const user = await UserModel.find({
-                _id: req.user._id
+                username: req.user.username
             }, function(err, item) {
-                res.status(OK).end(item);
+                res.status(OK).send(item);
             });
             if (!user) {
-                res.status(NOT_FOUND).end({success: false, msg: 'No user under this account'});
+                res.status(NOT_FOUND).send({success: false, msg: 'No user under this account'});
             }
             await MuscleModel.create({
                 name: req.body.name,
@@ -27,27 +27,25 @@ const MuscleController = {
             if (error){
                 console.log(error);
             } else {
-            console.log(muscle)
-            console.log(req.user._id) 
             UserModel.findOneAndUpdate({ _id: req.user._id },{ $push: { muscles: muscle } },
                 function(error, success) {
                     if (error) {
-                        res.status(BAD_REQUEST).end({msg: 'Error has occured while trying to updating UserModel.'});
+                        res.status(BAD_REQUEST).send({msg: 'Error has occured while trying to updating UserModel.'});
                     } else {
-                        res.status(CREATED).end({msg: 'UserModel has been updated.'});
+                        res.status(CREATED).end();
                     }
                 }
             )}
           })
         } catch (error) {
-            res.status(SERVER_ERROR).end({success: false, msg: 'Unauthorized, y tho.'});
+            res.status(SERVER_ERROR).send({success: false, msg: 'Unauthorized, y tho.'});
         }
     },
 
     async findMuscle(req, res) {
         try {
             const user = await UserModel.findOne({
-                username: req.body.username
+                username: req.user.username
             }, function(err, item) {
                 res.status(OK).send(item);
             });
@@ -68,9 +66,8 @@ const MuscleController = {
     async getMuscle(req, res) {
         try {  
             const user = await UserModel.findOne({
-                _id: req.user._id
+                username: req.user.username
             });
-            console.log(user);
             console.log(user.muscles);
             res.status(OK).send({ muscles: user.muscles });
         } catch (error) {
@@ -80,24 +77,32 @@ const MuscleController = {
 
     async deleteMuscle(req, res) {
         try {
-            const user = await UserModel.findOne({
-                username: res.params.username
-            });
-            if (!user) {
-                res.status(NOT_FOUND).json({success: false, msg: 'No user under this account'});
-            } else {
-                user.muscles.splice(user.muscles.indexOf(req.data.id), 1);
-                MuscleModel.findOneAndDelete({ _id: req.params.id }, (err, deletedMuscle) => {
-                  if (err) {
-                    console.log(err);
-                    } else {
-                    console.log(deletedMuscle._id);
-                    }
-                });
-                user.save();
-                res.status(OK).json({msg: 'Muscle has been deleted by Id from User.'});
-            }
+            // const user = await UserModel.findOne({
+            //     username: req.user.username
+            // });
+            console.log(req.data.title);
+            let title = req.data.title;
+            UserModel.update({_id: id}, 
+            {$pull: {muscles: { title: title}}})
+            // console.log(req.params.id)
+            // let id = req.params.id
+            // if (!user) {
+            //     res.status(NOT_FOUND).json({success: false, msg: 'No user under this account'});
+            // } else {
+            //     user.muscles.splice({_id: id}, 1);
+            //     MuscleModel.findOneAndUpdate({ _id: id }, (err, deleteMuscle) => {
+            //       if (err) {
+            //         console.log(err);
+            //         } else {
+            //         console.log(deleteMuscle);
+            //         }
+            //     });
+            //     user.save();
+            //     res.status(OK).json({msg: 'Muscle has been deleted by Id from User.'});
+            // }
         } catch (error) {
+            console.log(error);
+            console.log(res.params.id)
             res.status(SERVER_ERROR).json({success: false, msg: 'Failed to delete Gainz plan.'});
         }
     }
