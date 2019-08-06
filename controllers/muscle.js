@@ -83,7 +83,7 @@ const MuscleController = {
             if (!user) {
                 res.status(NOT_FOUND).json({success: false, msg: 'No user under this account'});
             } else {
-                user.muscles.splice({_id: id}, 1);
+                user.muscles.splice(id, 1);
                 MuscleModel.findOneAndUpdate({ _id: id }, (err, deleteMuscle) => {
                   if (err) {
                     console.log(err);
@@ -94,6 +94,13 @@ const MuscleController = {
                 user.save();
                 res.status(OK).json({msg: 'Muscle has been deleted by Id from User.'});
             }
+            // let id = req.params.id;
+            // UserModel.findOneAndUpdate(query, {$pull: {"muscles": {"_id": id}}}, function(err, data){
+            //     if(err){
+            //         return res.status(500).json({'error' : 'error in deleting address'});
+            //     }
+            //     res.json(data);
+            // })
         } catch (error) {
             console.log(error);
             console.log(res.params.id)

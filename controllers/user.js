@@ -46,6 +46,8 @@ const UserController = {
             if(!user) {
               res.status(BAD_REQUEST).json({success: false, msg: 'Authentication failed. User not found.'});
             } else {
+              console.log(req.cookie)
+              console.log(req.headers)
               user.comparePassword(req.body.password, function(err, isMatch) {
                 if(isMatch && !err) {
                   const token = jwt.sign(user.toJSON(), config.secret, {

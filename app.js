@@ -5,6 +5,7 @@ import mongoose from 'mongoose';
 import config from './config/database';
 import cors from 'cors';
 import bodyParser from 'body-parser';
+import decode from 'jwt-decode';
 import {GoalRouter} from './routes/goal.js';
 import {MuscleRouter} from './routes/muscle.js';
 import {SleepRouter} from './routes/sleep.js';
