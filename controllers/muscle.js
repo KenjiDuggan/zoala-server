@@ -68,7 +68,6 @@ const MuscleController = {
             const user = await UserModel.findOne({
                 username: req.user.username
             });
-            console.log(user.muscles);
             res.status(OK).send({ muscles: user.muscles });
         } catch (error) {
             res.status(SERVER_ERROR).send({success: false, msg: 'Failed to get Gainz'});
@@ -77,29 +76,24 @@ const MuscleController = {
 
     async deleteMuscle(req, res) {
         try {
-            // const user = await UserModel.findOne({
-            //     username: req.user.username
-            // });
-            console.log(req.data.title);
-            let title = req.data.title;
-            UserModel.update({_id: id}, 
-            {$pull: {muscles: { title: title}}})
-            // console.log(req.params.id)
-            // let id = req.params.id
-            // if (!user) {
-            //     res.status(NOT_FOUND).json({success: false, msg: 'No user under this account'});
-            // } else {
-            //     user.muscles.splice({_id: id}, 1);
-            //     MuscleModel.findOneAndUpdate({ _id: id }, (err, deleteMuscle) => {
-            //       if (err) {
-            //         console.log(err);
-            //         } else {
-            //         console.log(deleteMuscle);
-            //         }
-            //     });
-            //     user.save();
-            //     res.status(OK).json({msg: 'Muscle has been deleted by Id from User.'});
-            // }
+            const user = await UserModel.findOne({
+                username: req.user.username
+            });
+            let id = req.params.id
+            if (!user) {
+                res.status(NOT_FOUND).json({success: false, msg: 'No user under this account'});
+            } else {
+                user.muscles.splice({_id: id}, 1);
+                MuscleModel.findOneAndUpdate({ _id: id }, (err, deleteMuscle) => {
+                  if (err) {
+                    console.log(err);
+                    } else {
+                    console.log(deleteMuscle);
+                    }
+                });
+                user.save();
+                res.status(OK).json({msg: 'Muscle has been deleted by Id from User.'});
+            }
         } catch (error) {
             console.log(error);
             console.log(res.params.id)
