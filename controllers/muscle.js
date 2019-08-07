@@ -46,9 +46,8 @@ const MuscleController = {
         try {
             const user = await UserModel.findOne({
                 username: req.user.username
-            }, function(err, item) {
-                res.status(OK).send(item);
             });
+            
             await MuscleModel.find({'_id': { $in: user.muscles } }, 
             function (error, foundMuscle) {
                 if(error){

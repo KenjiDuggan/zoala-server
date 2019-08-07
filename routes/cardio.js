@@ -7,6 +7,6 @@ const CardioRouter = express.Router();
 CardioRouter.post("/", passport.authenticate('jwt', { session: false}), CardioController.postCardio);
 CardioRouter.get("/", passport.authenticate('jwt', { session: false}), CardioController.getCardio);
 CardioRouter.get("/:id", passport.authenticate('jwt', { session: false}), CardioController.findCardio);
-CardioRouter.delete("/cardio/:user/:id", passport.authenticate('jwt', { session: false}), CardioController.deleteCardio);
+CardioRouter.delete("/:id", passport.authenticate('jwt', { session: false}), CardioController.deleteCardio);
 
 export {CardioRouter};
