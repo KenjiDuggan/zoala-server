@@ -12,18 +12,16 @@ const CardioController = {
     async postCardio(req, res) {
         try {
             const user = await UserModel.findOne({
-                _id: req.user._id
-            }, function(err, item) {
-                res.status(OK).send(item);
+                username: req.body.username
             });
 
             if (!user) {
-                res.status(UNAUTHORIZED).json({success: true, msg: 'Successful created new Cardio under current user.'});
+                res.status(UNAUTHORIZED).send({success: true, msg: 'Successful created new Cardio under current user.'});
             }
 
             await CardioModel.create({
-                name: name,
-                description: description,
+                name: req.body.name,
+                description: req.body.description,
                 schedule: req.body.days
             }, (error, cardio) => {
                 if (error){
@@ -32,10 +30,10 @@ const CardioController = {
                 UserModel.findOneAndUpdate( {_id: req.user._id}, {$push: {cardios: cardio}},
                         function(error, success) {
                             if (error) {
-                                res.status().json({msg: 'Error has occured.'});
+                                res.status(BAD_REQUEST).send({msg: 'Error has occured.'});
                                 console.log(error);
                             } else {
-                                res.status().json({msg: 'Usermodel has been updated.'});
+                                res.status(CREATED).send({msg: 'Usermodel has been updated.'});
                                 console.log(success);
                             }
                         }
