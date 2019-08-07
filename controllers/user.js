@@ -26,11 +26,14 @@ const UserController = {
             food: [],
             sleep: []
           });
+          const token = jwt.sign(user.toJSON(), config.secret, {
+            expiresIn: 604800
+          });
           user.save(function(err) {
             if (err) {
                 return res.status(BAD_REQUEST).json({success: false, msg: 'Username already exists.'});
               }
-              res.status(OK).json({success: true, token: token, msg: 'Successful created new user.'});
+              res.status(OK).json({success: true, token: token, username: req.body.username, reason: req.body.reason, msg: 'Successful created new user.'});
           });
           }
         } catch(err) {
