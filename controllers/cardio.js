@@ -76,14 +76,13 @@ const CardioController = {
     async deleteCardio(req, res) {
         try {
             const user = await UserModel.findOne({
-                username: res.params.username
+                username: req.user.username
             });
             let id = req.params.id
             if (!user) {
                 res.status(BAD_REQUEST).json({success: false, msg: 'No user under this account'});
             } else {
-                user.cardios.splice( id, 1);
-                console.log(user.cardios);
+                user.cardios.splice(id, 1);
                 CardioModel.findOneAndDelete({ _id: id }, (err, deletedCardio) => {
                   if (err) {
                     console.log(err);

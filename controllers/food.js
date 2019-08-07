@@ -12,16 +12,15 @@ const FoodController = {
     async postFood(req, res) {
         try {
             const user = await UserModel.findOne({
-                _id: req.user._id
-            }, function(err, item) {
-                res.status(OK).end(item);
+                email: req.body.email
             });
+
             if (!user) {
                 res.status(NOT_FOUND).end({success: true, msg: 'Successful created new Food under current user.'});
             }
             await FoodModel.create({
-                name: name,
-                description: description,
+                name: req.body.name,
+                description: req.body.description,
                 schedule: req.body.meals
             }, (error, food) => {
                 if (error){
@@ -66,9 +65,9 @@ const FoodController = {
     async getFood(req, res) {
         try {  
             const user = await UserModel.findOne({
-                _id: req.user._id
+                username: req.user.username
             });
-            res.status(OK).end(user.foods);
+            res.status(OK).send({ foods: user.foods });
         } catch (error) {
             res.status(BAD_REQUEST).end({success: false, msg: 'Failed to get Gainz'});
         }
@@ -82,12 +81,13 @@ const FoodController = {
             if (!user) {
                 res.status(NOT_FOUND).end({success: false, msg: 'No user under this account'});
             } else {
-                user.foods.splice(user.foods.indexOf(req.params.id), 1);
-                FoodModel.findOneAndDelete({ _id: req.params.id }, (err, deletedFood) => {
+                let id = req.params.id
+                user.foods.splice(id, 1);
+                FoodModel.findOneAndDelete({_id: id}, (err, deletedFood) => {
                   if (err) {
                     console.log(err);
                     } else {
-                    console.log(deletedFood._id);
+                    console.log(deletedFood);
                     }
                 });
                 user.save();

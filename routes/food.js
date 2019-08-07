@@ -7,6 +7,6 @@ const FoodRouter = express.Router();
 FoodRouter.post("/", passport.authenticate('jwt', { session: false}), FoodController.postFood);
 FoodRouter.get("/", passport.authenticate('jwt', { session: false}), FoodController.getFood);
 FoodRouter.get("/:id", passport.authenticate('jwt', { session: false}), FoodController.findFood);
-FoodRouter.delete("/food/:user/:id", passport.authenticate('jwt', { session: false}), FoodController.deleteFood);
+FoodRouter.delete("/:id", passport.authenticate('jwt', { session: false}), FoodController.deleteFood);
 
 export {FoodRouter};
