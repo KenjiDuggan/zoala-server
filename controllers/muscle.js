@@ -3,14 +3,16 @@ const UserModel = require('../models/user');
 
 const OK = 200; 
 const CREATED = 201; 
+const NO_CONTENT = 204;
 const BAD_REQUEST = 400; 
 const NOT_FOUND = 403;
 const SERVER_ERROR = 500; 
 
 const MuscleController = {
 
-    async postMuscle(req, res) {
+    async createMuscle(req, res) {
         try {
+            console.log(req.body);
             const user = await UserModel.find({
                 username: req.user.username
             }, function(err, item) {
@@ -42,7 +44,7 @@ const MuscleController = {
         }
     },
 
-    async findMuscle(req, res) {
+    async readMuscle(req, res) {
         try {
             const user = await UserModel.findOne({
                 username: req.user.username
@@ -62,7 +64,7 @@ const MuscleController = {
         }
     },
 
-    async getMuscle(req, res) {
+    async readAllMuscle(req, res) {
         try {  
             const user = await UserModel.findOne({
                 username: req.user.username
@@ -70,6 +72,29 @@ const MuscleController = {
             res.status(OK).send({ muscles: user.muscles });
         } catch (error) {
             res.status(SERVER_ERROR).send({success: false, msg: 'Failed to get Gainz'});
+        }
+    },
+
+    async updateMuscle(req, res) {
+        try {
+            const user = await UserModel.findOne({
+                username: req.user.username
+            });
+            let id = req.params.id;
+            if(!user) {
+                res.status(NOT_FOUND).json({success: false, msg: 'No user under this account.'});
+            } else {
+                MuscleModel.findAndModify({
+                    query: {_id: id},
+                    update: {name: req.body.name, description: req.body.description, schedule: req.body.days},
+                    upsert: false
+                });
+                user.save();
+                res.status(OK).json({msg: 'Muscle has been updated by Id from User.'});
+            }
+        } catch (error){
+            console.log(error);
+            res.status(SERVER_ERROR).json({success: false, msg: 'Failed to update Gainz, something went wrong.'}); 
         }
     },
 
@@ -91,10 +116,10 @@ const MuscleController = {
                     }
                 });
                 user.save();
-                res.status(OK).json({msg: 'Muscle has been deleted by Id from User.'});
+                res.status(NO_CONTENT).json({msg: 'Muscle has been deleted by Id from User.'});
             }
             // let id = req.params.id;
-            // UserModel.findOneAndUpdate(query, {$pull: {"muscles": {"_id": id}}}, function(err, data){
+            // Uschedule: req.body.daysserModel.findOneAndUpdate(query, {$pull: {"muscles": {"_id": id}}}, function(err, data){
             //     if(err){
             //         return res.status(500).json({'error' : 'error in deleting address'});
             //     }
